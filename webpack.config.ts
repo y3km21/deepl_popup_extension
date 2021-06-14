@@ -2,7 +2,7 @@ import * as webpack from "webpack";
 import * as webpackDevServer from "webpack-dev-server";
 import * as path from "path";
 import * as HtmlWebpackPlugin from "html-webpack-plugin";
-
+import * as CopyPlugin from "copy-webpack-plugin";
 
 /************************************************************
  * 
@@ -10,14 +10,34 @@ import * as HtmlWebpackPlugin from "html-webpack-plugin";
  * 
  ************************************************************/
 
+const htmlWebpackPluginArray = (fileNameArray: string[]): (
+    ((this: webpack.Compiler, compiler: webpack.Compiler) => void)
+    | webpack.WebpackPluginInstance
+)[] => {
+    return fileNameArray.map(fileName => new HtmlWebpackPlugin({
+        filename: fileName + ".html",
+        chunks: [fileName],
+        title: fileName,
+        template: "src/index.html"
+    }));
+};
+
+const copyManifestJson: CopyPlugin = new CopyPlugin({
+    patterns: [
+        {
+            from: path.resolve(__dirname, "src", "manifest.json"),
+            to: path.resolve(__dirname,
+                "dist", "manifest.json")
+        }
+    ]
+})
+
+
 const plugins: (
     ((this: webpack.Compiler, compiler: webpack.Compiler) => void)
     | webpack.WebpackPluginInstance
-)[] = [
-        new HtmlWebpackPlugin({
-            template: "src/index.html",
-        }),
-    ];
+)[]
+    = htmlWebpackPluginArray(["popup", "options"]).concat(copyManifestJson);
 
 /************************************************************
  * 
@@ -50,6 +70,7 @@ const ts: webpack.RuleSetRule = {
     exclude: [/node_modules/],
 };
 
+
 const scss: webpack.RuleSetRule = {
     test: /\.s[ac]ss$/i,
     use: [
@@ -61,6 +82,7 @@ const scss: webpack.RuleSetRule = {
         "sass-loader",
     ],
 };
+
 
 const rules: webpack.RuleSetRule[] = [
     ts,
@@ -89,11 +111,16 @@ const resolve: webpack.ResolveOptions = {
  ************************************************************/
 
 const config: webpack.Configuration = {
-    entry: "./src/bootstrap.ts",
+    entry: {
+        popup: "./src/popup/bootstrap.ts",
+        options: "./src/options/bootstrap.ts",
+        background: "./src/background/index.ts",
+
+    },
     devtool: "inline-source-map",
     output: {
         path: path.resolve(__dirname, "dist"),
-        filename: "bundle.js",
+        filename: "[name].js",
     },
     mode: "development",
     plugins: plugins,

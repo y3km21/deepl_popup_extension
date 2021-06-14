@@ -1,3 +1,3 @@
-# ts_template
+# chrome extension template
 
-ts tamplate
+chrome extension template
