@@ -46,6 +46,8 @@ const plugins: (
  ************************************************************/
 
 const devServer: webpackDevServer.Configuration = {
+    hot: true,
+    index: "options.html",
     contentBase: path.join(__dirname, "dist"),
     compress: true,
     port: 8080,
@@ -83,10 +85,28 @@ const scss: webpack.RuleSetRule = {
     ],
 };
 
+var elmSource = path.resolve(__dirname, "src", "options",);
+
+const elm: webpack.RuleSetRule = {
+    test: /\.elm$/,
+    exclude: [/elm-stuff/, /node_modules/],
+    use: [
+        {
+            loader: 'elm-hot-webpack-loader',
+            options: { debug: true }
+        },
+        {
+            loader: 'elm-webpack-loader',
+            options: { cwd: elmSource },
+        }
+    ]
+}
+
 
 const rules: webpack.RuleSetRule[] = [
     ts,
     scss,
+    elm,
 ];
 
 // Module
@@ -102,6 +122,9 @@ const moduleObj: webpack.ModuleOptions = {
 
 const resolve: webpack.ResolveOptions = {
     extensions: [".tsx", ".ts", ".js"],
+    fallback: {
+        "path": require.resolve("path-browserify"),
+    }
 }
 
 /************************************************************

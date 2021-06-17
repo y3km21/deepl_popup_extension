@@ -1,15 +1,20 @@
 {
-    "name": "chrome extension example",
-    "description": "extension",
+    "name": "DeepL Translator Popup",
+    "description": "Unofficial DeepL extension",
     "version": "1.0",
     "manifest_version": 3,
     "background": {
         "service_worker": "background.js"
     },
     "permissions": [
+        "contextMenus",
+        "tabs",
         "storage",
-        "activeTab",
-        "scripting"
+        "scripting",
+        "webNavigation"
+    ],
+    "host_permissions": [
+        "https://www.deepl.com/translator*"
     ],
     "action": {
         "default_popup": "popup.html"
