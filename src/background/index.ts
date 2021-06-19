@@ -1,6 +1,6 @@
 //import { browser } from "webextension-polyfill-ts";
 import * as path from "path";
-
+import { Common } from "./common";
 
 /************************************************************
  * 
@@ -31,12 +31,14 @@ let immediatelyAfterWindowCreate = false;
  */
 // Window settings
 
-interface windowSetting { top?: number, left?: number, width?: number, height?: number, windowId?: number };
+//interface WindowSetting { top?: number, left?: number, width?: number, height?: number, windowId?: number };
+import WindowSetting = Common.WindowSetting;
+
 
 // top,left は最初初期化しない。
 // width,height は値が存在すれば初期化しない
 chrome.storage.sync.get(result => {
-    let windowsSettings: windowSetting = {};
+    let windowsSettings: WindowSetting = {};
     if (!("width" in result)) {
         windowsSettings.width = 750;
     }
@@ -69,6 +71,19 @@ let createAppWindow = async (createData: chrome.windows.CreateData) => {
 // 境界値が変更されたらPopupWindow位置、サイズ情報を保存する
 // Windowのサイズ変更、Windowの位置変更でFire
 chrome.windows.onBoundsChanged.addListener((window) => {
+
+    // deeplWindowIdが失効していないか確認
+    // 失効していればstorageを確認し存在すれば更新
+    if (deeplWindowId === -1) {
+        getWindowSetting().then(
+            setting => {
+                if ("windowId" in setting) {
+                    deeplWindowId = setting.windowId
+                }
+            }
+        )
+    }
+
     if (window.id === deeplWindowId) {
         chrome.storage.sync.set({ top: window.top, left: window.left, height: window.height, width: window.width });
     }
@@ -83,7 +98,12 @@ chrome.windows.onRemoved.addListener((windowId) => {
     }
 })
 
-
+let getWindowSetting = () => new Promise<Common.WindowSetting>(resolve => {
+    chrome.storage.sync.get((result) => {
+        console.log("flag-get");
+        resolve(result)
+    })
+});
 
 /************************************************************
  * 
@@ -116,23 +136,27 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
     // Storage deeplWindowId check
     if (deeplWindowId === -1) {
         // get WindowID in storage 
-        const getStorageDeeplWindowId: windowSetting = await (() => new Promise(resolve => {
+        let getStorageDeeplWindowId: WindowSetting = await (() => new Promise(resolve => {
             chrome.storage.sync.get((result) => {
                 resolve(result);
             })
         }))()
+        console.log(getStorageDeeplWindowId);
 
-        await chrome.windows.get(getStorageDeeplWindowId.windowId).then(
-            // Window Exist
-            window => {
-                deeplWindowId = getStorageDeeplWindowId.windowId;
-            }
-        ).catch(err => {
-            // Window No Exist
-            deeplWindowId = -1;
-        });
+        if ("windowId" in getStorageDeeplWindowId) {
 
-        console.log(`deeplWindowId is update! : ${deeplWindowId}`)
+            await chrome.windows.get(getStorageDeeplWindowId.windowId).then(
+                // Window Exist
+                window => {
+                    deeplWindowId = getStorageDeeplWindowId.windowId;
+                }
+            ).catch(err => {
+                // Window No Exist
+                deeplWindowId = -1;
+            });
+
+            console.log(`deeplWindowId is update! : ${deeplWindowId}`)
+        }
     }
 
 
@@ -143,7 +167,7 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
 
         // get window settings
         // sync.getがPromiseじゃないのでPromiseにしている。
-        const getWindowStatus: windowSetting = await (() => new Promise(resolve => {
+        let getWindowStatus: WindowSetting = await (() => new Promise(resolve => {
             chrome.storage.sync.get((result) => {
                 console.log(`WindowStatus is...`);
                 console.log(result);
@@ -154,7 +178,7 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
                 console.log(err);
             }
         ))()
-        let windowStatus: windowSetting = getWindowStatus;
+        let windowStatus: WindowSetting = getWindowStatus;
 
         // window Create Data
         let createData: chrome.windows.CreateData = {

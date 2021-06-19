@@ -7,8 +7,7 @@
   "scripts": {
     "start": "webpack serve --config webpack.config.ts",
     "build": "webpack --config webpack.config.ts",
-    "test": "webpack --config webpack.config.js",
-    "test_ts": "webpack --config webpack.config.002.ts"
+    "build_opt": "webpack --config webpack.config-optimize.ts"
   },
   "author": "Yusuke Mitsui",
   "license": "MIT",

@@ -1,0 +1,89 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+DecodeMsg	src/Main.elm	/^type DecodeMsg$/;"	t
+DecodeUserInput	src/Main.elm	/^    | DecodeUserInput DecodeMsg$/;"	t
+GotResultSetWindowSetting	src/Main.elm	/^    | GotResultSetWindowSetting JE.Value$/;"	t
+GotWindowSetting	src/Main.elm	/^    | GotWindowSetting JE.Value$/;"	t
+GotWindowSettingForCurrent	src/Main.elm	/^    | GotWindowSettingForCurrent JE.Value$/;"	t
+HeightChange	src/Main.elm	/^    | HeightChange$/;"	t
+HeightError	src/Main.elm	/^    | HeightError SettingInputError$/;"	t
+InitCurrentValue	src/Main.elm	/^    = InitCurrentValue$/;"	t
+InputChange	src/Main.elm	/^    | InputChange InputMsg String$/;"	t
+InputMsg	src/Main.elm	/^type InputMsg$/;"	t
+InvalidInput	src/Main.elm	/^    = InvalidInput$/;"	t
+LeftChange	src/Main.elm	/^    | LeftChange$/;"	t
+LeftError	src/Main.elm	/^    | LeftError SettingInputError$/;"	t
+Main	src/Main.elm	/^port module Main exposing (main)$/;"	m
+Model	src/Main.elm	/^type alias Model =$/;"	a
+Msg	src/Main.elm	/^type Msg$/;"	t
+SettingInputError	src/Main.elm	/^type SettingInputError$/;"	t
+Submit	src/Main.elm	/^    = Submit$/;"	t
+SubmitError	src/Main.elm	/^    | SubmitError$/;"	t
+SubmitResult	src/Main.elm	/^type alias SubmitResult =$/;"	a
+SubmitSettingMsg	src/Main.elm	/^type SubmitSettingMsg$/;"	t
+SubmitSuccess	src/Main.elm	/^    | SubmitSuccess$/;"	t
+SubmitWindowSetting	src/Main.elm	/^    | SubmitWindowSetting SubmitSettingMsg$/;"	t
+TooSmall	src/Main.elm	/^    | TooSmall$/;"	t
+TopChange	src/Main.elm	/^    = TopChange$/;"	t
+TopError	src/Main.elm	/^    = TopError SettingInputError$/;"	t
+TryDecodeWindowSetting	src/Main.elm	/^    = TryDecodeWindowSetting$/;"	t
+UserInputSetting	src/Main.elm	/^type alias UserInputSetting =$/;"	a
+WidthChange	src/Main.elm	/^    | WidthChange$/;"	t
+WidthError	src/Main.elm	/^    | WidthError SettingInputError$/;"	t
+WindowSetting	src/Main.elm	/^type alias WindowSetting =$/;"	a
+WindowSettingFormError	src/Main.elm	/^type WindowSettingFormError$/;"	t
+arowM/elm-form-decoder	elm.json	/^            "arowM\/elm-form-decoder": "1.4.0",$/;"	f
+createDiv	src/Main.elm	/^        createDiv : String -> String -> InputMsg -> (SettingInputError -> WindowSettingFormError) -> Html Msg$/;"	f
+currentSetting	src/Main.elm	/^currentSetting : WindowSetting -> Html msg$/;"	f
+decodeCmd	src/Main.elm	/^decodeCmd : DecodeMsg -> Cmd Msg$/;"	f
+dependencies	elm.json	/^    "dependencies": {$/;"	f
+direct	elm.json	/^        "direct": {$/;"	f
+direct	elm.json	/^        "direct": {},$/;"	f
+elm-version	elm.json	/^    "elm-version": "0.19.1",$/;"	f
+elm/browser	elm.json	/^            "elm\/browser": "1.0.2",$/;"	f
+elm/bytes	elm.json	/^            "elm\/bytes": "1.0.8",$/;"	f
+elm/core	elm.json	/^            "elm\/core": "1.0.5",$/;"	f
+elm/file	elm.json	/^            "elm\/file": "1.0.5",$/;"	f
+elm/html	elm.json	/^            "elm\/html": "1.0.0",$/;"	f
+elm/http	elm.json	/^            "elm\/http": "2.0.0",$/;"	f
+elm/json	elm.json	/^            "elm\/json": "1.1.3"$/;"	f
+elm/time	elm.json	/^            "elm\/time": "1.0.0",$/;"	f
+elm/url	elm.json	/^            "elm\/url": "1.0.0",$/;"	f
+elm/virtual-dom	elm.json	/^            "elm\/virtual-dom": "1.0.2"$/;"	f
+entrypoints	elm-tooling.json	/^    "entrypoints": [$/;"	f
+errCmp	src/Main.elm	/^errCmp : WindowSettingFormError -> (SettingInputError -> WindowSettingFormError) -> Bool$/;"	f
+errFilter	src/Main.elm	/^errFilter : List WindowSettingFormError -> (SettingInputError -> WindowSettingFormError) -> List WindowSettingFormError$/;"	f
+errPick	src/Main.elm	/^errPick : WindowSettingFormError -> SettingInputError$/;"	f
+errdiv	src/Main.elm	/^        errdiv : SettingInputError -> Html msg$/;"	f
+errsHtmlMsg	src/Main.elm	/^errsHtmlMsg : List WindowSettingFormError -> (SettingInputError -> WindowSettingFormError) -> Html Msg$/;"	f
+getWindowSetting	src/Main.elm	/^port getWindowSetting : () -> Cmd msg$/;"	p
+getWindowSettingForCurrent	src/Main.elm	/^port getWindowSettingForCurrent : () -> Cmd msg$/;"	p
+gotResultSetWindowSetting	src/Main.elm	/^port gotResultSetWindowSetting : (JE.Value -> msg) -> Sub msg$/;"	p
+gotWindowSetting	src/Main.elm	/^port gotWindowSetting : (JE.Value -> msg) -> Sub msg$/;"	p
+gotWindowSettingForCurrent	src/Main.elm	/^port gotWindowSettingForCurrent : (JE.Value -> msg) -> Sub msg$/;"	p
+indirect	elm.json	/^        "indirect": {$/;"	f
+indirect	elm.json	/^        "indirect": {}$/;"	f
+init	src/Main.elm	/^init : () -> ( Model, Cmd Msg )$/;"	f
+main	src/Main.elm	/^main : Program () Model Msg$/;"	c
+maybeIntDecoder	src/Main.elm	/^maybeIntDecoder : FD.Decoder (Maybe Int) () String$/;"	c
+maybeMinBound	src/Main.elm	/^maybeMinBound : Int -> (SettingInputError -> WindowSettingFormError) -> FD.Validator (Maybe Int) WindowSettingFormError$/;"	f
+setWindowSetting	src/Main.elm	/^port setWindowSetting : JE.Value -> Cmd msg$/;"	p
+settingInit	src/Main.elm	/^settingInit : WindowSetting$/;"	c
+source-directories	elm.json	/^    "source-directories": [$/;"	f
+statusDecoder	src/Main.elm	/^statusDecoder : String -> JD.Decoder ()$/;"	f
+stringToMaybeInt	src/Main.elm	/^stringToMaybeInt : Bool -> (SettingInputError -> WindowSettingFormError) -> FD.Decoder String WindowSettingFormError (Maybe Int)$/;"	f
+subscriptions	src/Main.elm	/^subscriptions : Model -> Sub Msg$/;"	f
+test-dependencies	elm.json	/^    "test-dependencies": {$/;"	f
+type	elm.json	/^    "type": "application",$/;"	f
+update	src/Main.elm	/^update : Msg -> Model -> ( Model, Cmd Msg )$/;"	f
+userInputDecoder	src/Main.elm	/^userInputDecoder : FD.Decoder WindowSetting () UserInputSetting$/;"	c
+userInputSetting	src/Main.elm	/^userInputSetting : List WindowSettingFormError -> UserInputSetting -> Html Msg$/;"	f
+view	src/Main.elm	/^view : Model -> Browser.Document Msg$/;"	f
+windowSettingDecoder	src/Main.elm	/^windowSettingDecoder : FD.Decoder UserInputSetting WindowSettingFormError WindowSetting$/;"	c
+windowSettingJsonDecoder	src/Main.elm	/^windowSettingJsonDecoder : JD.Decoder WindowSetting$/;"	c
+windowSettingJsonEncoder	src/Main.elm	/^windowSettingJsonEncoder : WindowSetting -> JE.Value$/;"	f
+windowSettingResultDecoder	src/Main.elm	/^windowSettingResultDecoder : JD.Decoder ()$/;"	c

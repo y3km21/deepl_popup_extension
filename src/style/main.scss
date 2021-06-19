@@ -32,13 +32,104 @@ body {
   background-color: $sub-color0;
 }
 
-button{
-  height: 30px;
-  width: 30px;
-  outline: none;
+.option_wrapper {
+  display: flex;
+  flex-direction: column;
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+.setting_wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 0.1rem 0.1rem 0.1rem 0.1rem;
+
+  h2 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+  }
+}
+
+.setting_values_wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  margin: 0.3rem 0.1rem 0.2rem 0.1rem;
+
+  .form_wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 0.2rem;
+    .form_div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin-left: 1rem;
+      input {
+        margin-left: 0.5rem;
+        width: 5rem;
+      }
+
+      .value {
+        margin-left: 0.5rem;
+        width: 5rem;
+      }
+    }
+  }
+}
+
+.form_errs {
+  display: flex;
+  flex-direction: column;
+  min-height: 1.5rem;
+
+  .form_err {
+    margin-top: 0.1rem;
+    text-align: right;
+    color: red;
+  }
+}
+
+.status_button_wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
   margin: 10px;
+
+  .submit_wrapper {
+    padding: 2px 4px 2px 4px;
+  }
+}
+
+.buttons_wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+button {
+  outline: none;
+  padding: 2px 4px 2px 4px;
+  margin: 0 10px 0 10px;
   border: none;
   border-radius: 2px;
+  background-color: lightgrey;
+
+  &:hover {
+    background-color: grey;
+  }
+  &:active {
+    color: whitesmoke;
+  }
+
+  &[unablesubmit="true"] {
+    color: whitesmoke;
+
+    &:hover {
+      background-color: lightgrey;
+    }
+  }
 }
 
 button.current {

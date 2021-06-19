@@ -1,3 +1,5 @@
+import { Common } from "../../background/common"
+
 export namespace Elm {
     namespace Main {
         interface App {
@@ -10,12 +12,16 @@ export namespace Elm {
         }
 
         interface Flags {
-            initialValue: string;
+            initialValue: any;
         }
 
         interface Ports {
-            messageSentFromElm: Subscribe<string>;
-            sendMessageToElm: Send<string>;
+            getWindowSetting: Subscribe<any>;
+            gotWindowSetting: Send<any>;
+            setWindowSetting: Subscribe<Common.WindowSetting>;
+            gotResultSetWindowSetting: Send<any>;
+            getWindowSettingForCurrent: Subscribe<any>;
+            gotWindowSettingForCurrent: Send<any>;
         }
 
         interface Subscribe<T> {
