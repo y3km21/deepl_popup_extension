@@ -7,7 +7,7 @@ const changeColorButton = document.createElement("button");
 changeColorButton.id = "changeColor";
 document.body.appendChild(changeColorButton);
 
-browser.storage.sync.get("color").then(({ color }) => { changeColorButton.style.backgroundColor = color });
+browser.storage.local.get("color").then(({ color }) => { changeColorButton.style.backgroundColor = color });
 
 // When the button is clicked, inject setPageBackgroundColor into current page
 changeColorButton.addEventListener("click", async () => {
@@ -20,5 +20,5 @@ changeColorButton.addEventListener("click", async () => {
 // The body of this function will be executed as a content script inside the
 // current page
 function setPageBackgroundColor() {
-    chrome.storage.sync.get("color", ({ color }) => { document.body.style.backgroundColor = color; });
+    chrome.storage.local.get("color", ({ color }) => { document.body.style.backgroundColor = color; });
 }

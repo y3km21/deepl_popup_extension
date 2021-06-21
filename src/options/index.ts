@@ -22,30 +22,8 @@ var app = Elm.Main.init({
  *
  ************************************************************/
 
-
-
-let getWindowSetting = () => new Promise<Common.WindowSetting>(resolve => {
-    chrome.storage.sync.get((result) => {
-        console.log("flag-get");
-        resolve(result)
-    })
-});
-
-const clearWindowSetting = () => new Promise<void>(resolve => chrome.storage.sync.clear(
-    () => {
-        console.log("flag-clear");
-        resolve()
-    }
-));
-
-const setWindowSetting = (windowSetting: Common.WindowSetting) => new Promise<void>(resolve => chrome.storage.sync.set(windowSetting, () => {
-    console.log("flag-set");
-
-    resolve()
-}));
-
 app.ports.getWindowSetting.subscribe((_) => {
-    getWindowSetting().then(
+    Common.getWindowSetting().then(
         windowSettings => {
             // Window Setting Send
             console.log(windowSettings);
@@ -61,24 +39,16 @@ app.ports.getWindowSetting.subscribe((_) => {
 
 })
 
-app.ports.getWindowSettingForCurrent.subscribe((_) => {
-    getWindowSetting().then(
-        windowSettings => {
-            // Window Setting Send
-            console.log(windowSettings);
-
-            app.ports.gotWindowSettingForCurrent.send(windowSettings);
-        }
-    ).catch(err => {
-        console.log(err);
-        // Error Send
-        app.ports.gotWindowSettingForCurrent.send(err);
-    })
+chrome.storage.onChanged.addListener((changes, areaName) => {
+    console.log(changes);
+    Common.getWindowSetting().then(val => {
+        app.ports.gotWindowSettingForCurrent.send(val);
+    }).catch(err => console.log(err));
 })
 
 
 app.ports.setWindowSetting.subscribe((setting) => {
-    getWindowSetting().then(tmpWindowSetting => {
+    Common.getWindowSetting().then(tmpWindowSetting => {
         if (!("top" in setting)) {// Settingに"top"が存在しない
             delete tmpWindowSetting.top
         } else {
@@ -95,12 +65,15 @@ app.ports.setWindowSetting.subscribe((setting) => {
         tmpWindowSetting.width = setting.width
         tmpWindowSetting.height = setting.height
 
+        // window位置を更新
+        Common.windowUpdate(tmpWindowSetting);
+
         // clearする
-        return clearWindowSetting().then(
+        return Common.clearWindowSetting().then(
             () => {
                 console.log(tmpWindowSetting);
                 // storageを更新する
-                return setWindowSetting(tmpWindowSetting)
+                return Common.setWindowSetting(tmpWindowSetting)
             }
         ).catch(err => reject(err));
 

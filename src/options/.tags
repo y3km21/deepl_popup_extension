@@ -8,10 +8,9 @@ DecodeMsg	src/Main.elm	/^type DecodeMsg$/;"	t
 DecodeUserInput	src/Main.elm	/^    | DecodeUserInput DecodeMsg$/;"	t
 GotResultSetWindowSetting	src/Main.elm	/^    | GotResultSetWindowSetting JE.Value$/;"	t
 GotWindowSetting	src/Main.elm	/^    | GotWindowSetting JE.Value$/;"	t
-GotWindowSettingForCurrent	src/Main.elm	/^    | GotWindowSettingForCurrent JE.Value$/;"	t
+GotWindowSettingForCurrent	src/Main.elm	/^    = GotWindowSettingForCurrent JE.Value$/;"	t
 HeightChange	src/Main.elm	/^    | HeightChange$/;"	t
 HeightError	src/Main.elm	/^    | HeightError SettingInputError$/;"	t
-InitCurrentValue	src/Main.elm	/^    = InitCurrentValue$/;"	t
 InputChange	src/Main.elm	/^    | InputChange InputMsg String$/;"	t
 InputMsg	src/Main.elm	/^type InputMsg$/;"	t
 InvalidInput	src/Main.elm	/^    = InvalidInput$/;"	t
@@ -61,7 +60,6 @@ errPick	src/Main.elm	/^errPick : WindowSettingFormError -> SettingInputError$/;"
 errdiv	src/Main.elm	/^        errdiv : SettingInputError -> Html msg$/;"	f
 errsHtmlMsg	src/Main.elm	/^errsHtmlMsg : List WindowSettingFormError -> (SettingInputError -> WindowSettingFormError) -> Html Msg$/;"	f
 getWindowSetting	src/Main.elm	/^port getWindowSetting : () -> Cmd msg$/;"	p
-getWindowSettingForCurrent	src/Main.elm	/^port getWindowSettingForCurrent : () -> Cmd msg$/;"	p
 gotResultSetWindowSetting	src/Main.elm	/^port gotResultSetWindowSetting : (JE.Value -> msg) -> Sub msg$/;"	p
 gotWindowSetting	src/Main.elm	/^port gotWindowSetting : (JE.Value -> msg) -> Sub msg$/;"	p
 gotWindowSettingForCurrent	src/Main.elm	/^port gotWindowSettingForCurrent : (JE.Value -> msg) -> Sub msg$/;"	p

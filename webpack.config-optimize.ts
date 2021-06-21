@@ -27,7 +27,7 @@ const copyManifestJson: CopyPlugin = new CopyPlugin({
         {
             from: path.resolve(__dirname, "src", "manifest.json"),
             to: path.resolve(__dirname,
-                "dist", "manifest.json")
+                "prod", "manifest.json")
         }
     ]
 })
@@ -48,7 +48,7 @@ const plugins: (
 const devServer: webpackDevServer.Configuration = {
     hot: true,
     index: "options.html",
-    contentBase: path.join(__dirname, "dist"),
+    contentBase: path.join(__dirname, "prod"),
     compress: true,
     port: 8080,
 };
@@ -145,7 +145,7 @@ const config: webpack.Configuration = {
     },
     devtool: "inline-source-map",
     output: {
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, "prod"),
         filename: "[name].js",
     },
     mode: "production",

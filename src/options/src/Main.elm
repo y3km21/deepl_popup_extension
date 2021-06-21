@@ -111,8 +111,7 @@ init _ =
 
 
 type Msg
-    = InitCurrentValue
-    | GotWindowSettingForCurrent JE.Value
+    = GotWindowSettingForCurrent JE.Value
     | GotWindowSetting JE.Value
     | InputChange InputMsg String
     | DecodeUserInput DecodeMsg
@@ -162,9 +161,6 @@ decodeCmd msgDecode =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        InitCurrentValue ->
-            ( { model | submitResult = SubmitResult "black" "" }, getWindowSettingForCurrent () )
-
         GotWindowSettingForCurrent raw ->
             ( case JD.decodeValue windowSettingJsonDecoder raw of
                 Ok ws ->
@@ -280,13 +276,8 @@ view model =
     { title = "Options"
     , body =
         [ div [ class "option_wrapper" ]
-            [ h1 [] [ text "Options" ]
+            [ h1 [] [ text "Popup Window Options" ]
             , currentSetting model.current
-            , div [ class "status_button_wrapper" ]
-                [ div [ class "buttons_wrapper" ]
-                    [ button [ onClick <| InitCurrentValue ] [ text "GetCurrenttValue" ]
-                    ]
-                ]
             , userInputSetting model.windowSettingFormError model.userinput
             , div [ class "status_button_wrapper" ]
                 [ div [ class "submit_status", style "color" model.submitResult.color ] [ text model.submitResult.message ]
@@ -339,7 +330,8 @@ currentSetting ws =
                     )
     in
     div [ class "setting_wrapper" ] <|
-        [ h2 [] [ text "Current Window Setting Value" ]
+        [ h2 [] [ text "Current Settings" ]
+        , div [ class "description" ] [ text "\"Default\" is applied from next open" ]
         , div [ class "setting_values_wrapper" ] setting_list_div
         ]
 
@@ -368,7 +360,7 @@ userInputSetting errs uis =
                         [ value wsElem
                         , placeholder <|
                             if label == "top" || label == "left" then
-                                "Initialize"
+                                "Default"
 
                             else
                                 ""
@@ -383,7 +375,12 @@ userInputSetting errs uis =
             List.map4 createDiv labelList wsElemList msgList errList
     in
     div [ class "setting_wrapper" ] <|
-        [ h2 [] [ text "User Input Setting Value" ]
+        [ h2 [] [ text "Setting Forms" ]
+        , div [ class "description" ]
+            [ text "You can set the position and size of the window. "
+            , text "If a recognized window exists, the settings will be reflected immediately."
+            , text "However, if top or left are set on Default(when form is empty), it will not be reflected immediately."
+            ]
         , div [ class "setting_values_wrapper" ] setting_list_div
         ]
 
@@ -452,9 +449,7 @@ errsHtmlMsg errs toWindowSettingFormError =
  - Ports
  -
  ------------------------------}
-
-
-port getWindowSettingForCurrent : () -> Cmd msg
+--port getWindowSettingForCurrent : () -> Cmd msg
 
 
 port gotWindowSettingForCurrent : (JE.Value -> msg) -> Sub msg

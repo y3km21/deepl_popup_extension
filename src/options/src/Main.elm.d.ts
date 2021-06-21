@@ -20,7 +20,6 @@ export namespace Elm {
             gotWindowSetting: Send<any>;
             setWindowSetting: Subscribe<Common.WindowSetting>;
             gotResultSetWindowSetting: Send<any>;
-            getWindowSettingForCurrent: Subscribe<any>;
             gotWindowSettingForCurrent: Send<any>;
         }
 
