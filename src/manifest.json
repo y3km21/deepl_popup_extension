@@ -1,5 +1,5 @@
 {
-    "name": "DeepL Translator Popup",
+    "name": "DeepL Translator Single Popup",
     "description": "Unofficial DeepL Translator Single Popup Window extension.",
     "version": "1.0",
     "manifest_version": 3,
@@ -19,5 +19,10 @@
     "action": {
         "default_popup": "popup.html"
     },
-    "options_page": "options.html"
+    "options_page": "options.html",
+    "icons": {
+        "16": "icon16.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
+    }
 }

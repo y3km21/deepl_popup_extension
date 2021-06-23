@@ -32,12 +32,28 @@ const copyManifestJson: CopyPlugin = new CopyPlugin({
     ]
 })
 
+const copyIcons: CopyPlugin = new CopyPlugin({
+    patterns: [
+        {
+            from: path.resolve(__dirname, "src", "icons", "icon128.png"),
+            to: path.resolve(__dirname, "prod", "icon128.png")
+        }
+        , {
+            from: path.resolve(__dirname, "src", "icons", "icon48.png"),
+            to: path.resolve(__dirname, "prod", "icon48.png")
+        }, {
+            from: path.resolve(__dirname, "src", "icons", "icon16.png"),
+            to: path.resolve(__dirname, "prod", "icon16.png")
+        }
+    ]
+})
+
 
 const plugins: (
     ((this: webpack.Compiler, compiler: webpack.Compiler) => void)
     | webpack.WebpackPluginInstance
 )[]
-    = htmlWebpackPluginArray(["popup", "options"]).concat(copyManifestJson);
+    = htmlWebpackPluginArray(["popup", "options"]).concat(copyManifestJson).concat(copyIcons);
 
 /************************************************************
  * 
