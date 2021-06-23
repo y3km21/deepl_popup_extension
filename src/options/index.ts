@@ -3,7 +3,7 @@ import "./../style/reset.scss";
 import "./../style/main.scss";
 import { Elm } from "./src/Main.elm";
 import { reject, result } from "lodash";
-import { Common } from "../background/common"
+import { Common } from "../ts/common"
 
 let main = document.createElement("div");
 main.id = "main";
@@ -23,7 +23,7 @@ var app = Elm.Main.init({
  ************************************************************/
 
 app.ports.getWindowSetting.subscribe((_) => {
-    Common.getWindowSetting().then(
+    Common.getWindowSetting("Elm getWindowsSetting").then(
         windowSettings => {
             // Window Setting Send
             console.log(windowSettings);
@@ -40,10 +40,21 @@ app.ports.getWindowSetting.subscribe((_) => {
 })
 
 chrome.storage.onChanged.addListener((changes, areaName) => {
+    console.log("/----Storage onChanged")
     console.log(changes);
-    Common.getWindowSetting().then(val => {
-        app.ports.gotWindowSettingForCurrent.send(val);
-    }).catch(err => console.log(err));
+    Common.getWindowSetting("onChanged").then(windowSetting => {
+
+        //　StorageがClearされた直後はElmに送信しない
+        if (!(windowSetting.settingExist === undefined)) {
+            app.ports.gotWindowSettingForCurrent.send(windowSetting);
+            app.ports.gotLanguage.send(windowSetting);
+        }
+    }
+    ).catch(
+        err => console.log(err)
+    ).finally(() => {
+        console.log("     Storage onChanged End----/")
+    });
 })
 
 
@@ -66,19 +77,32 @@ app.ports.setWindowSetting.subscribe((setting) => {
         tmpWindowSetting.height = setting.height
 
         // window位置を更新
-        Common.windowUpdate(tmpWindowSetting);
+        // -- ここで　chrome.windows.onBoundsChanged.removeListner
+        // background と optionsで指してるwindowsが違うんだが？
+        //console.log(chrome.windows.onBoundsChanged.hasListeners());//false  <-!!?
+        //chrome.windows.onBoundsChanged.removeListener(Common.onBoundsChangeFunc);
+        //console.log(chrome.windows.onBoundsChanged.hasListeners());//false
+        //諦めてstorageにフラグを建てることにしました。
+        Common.windowUpdate(tmpWindowSetting)
+            .then((window) => {
+                //chrome.windows.onBoundsChanged.addListener(Common.onBoundsChangeFunc);
+
+            }).catch(err => console.log(err));
+        // -- .then　chrome.windows.onBoundsChanged.addListener
 
         // clearする
         return Common.clearWindowSetting().then(
-            () => {
-                console.log(tmpWindowSetting);
+            async () => {
+                console.log(`update Storage : `)
+                console.log(tmpWindowSetting)
                 // storageを更新する
-                return Common.setWindowSetting(tmpWindowSetting)
+                return Common.setWindowSetting(tmpWindowSetting, "afterclear")
             }
         ).catch(err => reject(err));
 
     }).then(
         () => {
+            console.log("return elm")
             // elmへ結果をリターン
             app.ports.gotResultSetWindowSetting.send({ status: "Success" });
         }
@@ -91,3 +115,29 @@ app.ports.setWindowSetting.subscribe((setting) => {
 
 
 })
+
+// Set Language
+app.ports.setLang.subscribe((setting) =>
+    Common.setWindowSetting(setting).then(
+        () => {
+            return Common.getWindowSetting()
+        }
+    ).then(
+        (windowSetting) => {
+            app.ports.gotLanguage.send(windowSetting)
+        }
+    ).catch(
+        err => console.log(err)
+    )
+)
+
+// Get Language
+app.ports.getLanguage.subscribe(() =>
+    Common.getWindowSetting().then(
+        (windowSetting) => {
+            app.ports.gotLanguage.send(windowSetting)
+        }
+    ).catch(
+        err => console.log(err)
+    )
+)

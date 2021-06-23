@@ -1,6 +1,6 @@
 {
     "name": "DeepL Translator Popup",
-    "description": "Unofficial DeepL extension",
+    "description": "Unofficial DeepL Translator Single Popup Window extension.",
     "version": "1.0",
     "manifest_version": 3,
     "background": {

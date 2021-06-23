@@ -16,11 +16,6 @@ export namespace Elm {
         }
 
         interface Ports {
-            getWindowSetting: Subscribe<any>;
-            gotWindowSetting: Send<any>;
-            setWindowSetting: Subscribe<Common.WindowSetting>;
-            gotResultSetWindowSetting: Send<any>;
-            gotWindowSettingForCurrent: Send<any>;
             setLang: Subscribe<Common.WindowSetting>;
             getLanguage: Subscribe<any>;
             gotLanguage: Send<any>;

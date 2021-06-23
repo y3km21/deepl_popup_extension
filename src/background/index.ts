@@ -1,6 +1,6 @@
 import { reject } from "lodash";
 import * as path from "path";
-import { Common } from "./common";
+import { Common } from "../ts/common";
 
 
 /************************************************************
@@ -12,12 +12,8 @@ import { Common } from "./common";
  * 
  * TODO
  * 
- * 
- * 
  */
 // Window settings
-
-//interface WindowSetting { top?: number, left?: number, width?: number, height?: number, windowId?: number };
 import WindowSetting = Common.WindowSetting;
 
 // Initialize
@@ -34,6 +30,16 @@ try {
         if (!("windowId" in result)) { // windowIDが存在しない場合、初期化する
             windowsSettings.windowId = -1;
         }
+
+        if (!("from" in result)) {// fromが存在しない場合、初期化する
+            windowsSettings.from = "en"
+        }
+
+        if (!("into" in result)) {// intoが存在しない場合、初期化する
+            windowsSettings.into = "ja"
+        }
+
+        windowsSettings.settingExist = true;
 
         // Set
         try {
@@ -61,41 +67,57 @@ let createAppWindow = async (createData: chrome.windows.CreateData) => {
 
 // PopupWindow位置、サイズ情報を保存する
 // Windowのサイズ変更、Windowの位置変更でFire
+// async を別途　Commonに関数でまとめて　removeListener を呼べるようにする
 chrome.windows.onBoundsChanged.addListener(async (window) => {
-    if (window.type !== "popup") {// popupではないwindowは無視
-        return;
-    } else if (window.id === (await Common.getWindowSetting()).windowId) {　// 選択したwindowのIDとStrageWindowIDが同じ
-        console.log("Storage Window ID is Valid")
-        chrome.storage.local.set({ top: window.top, left: window.left, height: window.height, width: window.width });
-    } else {
-        console.log("Storage Window ID is Invalid")
 
-        chrome.tabs.query({
-            url: "https://www.deepl.com/translator*",
-            windowId: window.id
-        }).then(
-            async tabs => {
-                if (tabs.length === 0) {// 選択したタブがDeepLではない
-                    console.log("Invalid Window");
-                    return;
-                } else {//  選択したタブがDeepL
-                    try {
-                        chrome.storage.local.set({
-                            top: window.top,
-                            left: window.left,
-                            height: window.height,
-                            width: window.width,
-                            windowId: window.id
-                        }, () => {
-                            console.log(`Update Storage Window ID : ${window.id}`)
-                        });
-                    } catch (e) {
-                        console.log(e);
+    let storageSetting = await Common.getWindowSetting("onBoundsChanged");
+    let storageWindowID = storageSetting.windowId;
+    console.log(`SettingSubmit in onBoundsChanged : ${storageSetting.settingExist}`);
+
+    //　StorageがClearされた直後は評価を行わない
+    if (!(storageSetting.settingExist === undefined)) {
+        if (window.type !== "popup") {// popupではないwindowは無視
+            return;
+        } else if (window.id === storageWindowID) {　// 選択したwindowのIDとStrageWindowIDが同じ
+            console.log("/----Windows OnBoundsChanged----/")
+            console.log(`Storage Window ID is Valid : ${storageWindowID}`)
+            chrome.storage.local.set({ top: window.top, left: window.left, height: window.height, width: window.width }, () => {
+                console.log("/----Windows OnBoundsChanged End----/")
+            });
+        } else {
+            console.log("/----Windows OnBoundsChanged----/")
+            console.log(`Storage Window ID is Invalid : ${storageWindowID}`)
+
+            chrome.tabs.query({
+                url: "https://www.deepl.com/translator*",
+                windowId: window.id
+            }).then(
+                async tabs => {
+                    if (tabs.length === 0) {// 選択したタブがDeepLではない
+                        console.log("Invalid Window");
+                        return;
+                    } else {//  選択したタブがDeepL
+                        try {
+                            console.log("-- Set Storage")
+                            chrome.storage.local.set({
+                                top: window.top,
+                                left: window.left,
+                                height: window.height,
+                                width: window.width,
+                                windowId: window.id
+                            }, () => {
+                                console.log(`Update Storage Window ID : ${window.id}`)
+                                console.log("/----Windows OnBoundsChanged End----/")
+
+                            });
+                        } catch (e) {
+                            console.log(e);
+                        }
                     }
-                }
 
-            }
-        ).catch(err => console.log(err));
+                }
+            ).catch(err => console.log(err));
+        }
     }
 })
 
@@ -125,18 +147,28 @@ let contextProperties: chrome.contextMenus.CreateProperties = {
 
 };
 
-//TODO : contextの存在を確認してから作成したほうがいい
-chrome.contextMenus.create(contextProperties);
+try {
+    chrome.contextMenus.create(contextProperties);
+} catch (err) {
+    console.log(err);
+}
 
 chrome.contextMenus.onClicked.addListener(async (info) => {
     /* 
      * 
      * Todo
      * selectedTextのトリム、　トリム設定を設定画面からできるとよし。
-     * 
      */
+
+    // get window settings
+    let storageWindowSetting: WindowSetting = await Common.getWindowSetting();
+
+
+    // Url 
     let selectedText = info.selectionText;
-    let url = path.join("https://www.deepl.com/translator#en/ja/", selectedText);
+    let url = new URL("https://www.deepl.com");
+    url.pathname = "/translator"
+    url.hash = path.join(storageWindowSetting.from, storageWindowSetting.into, selectedText);
 
     // updateWIndowID
     let updateWindowID = -1;
@@ -208,8 +240,7 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
     if (!windowExists) { // Window No Exists
         console.log(`Create Window phase ... `)
 
-        // get window settings
-        let storageWindowSetting: WindowSetting = await Common.getWindowSetting();
+
 
         // window Create 
         let createData: chrome.windows.CreateData = {
@@ -219,7 +250,7 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
             left: storageWindowSetting.left,
             height: storageWindowSetting.height,
             width: storageWindowSetting.width,
-            url: url,
+            url: url.href,
         }
         updateWindowID = await createAppWindow(createData);
 
@@ -248,12 +279,12 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
             else {
                 // Window 作成直後ではない
                 // tabの更新を行う
-                await chrome.tabs.update(tab.id, { url: url })
+                await chrome.tabs.update(tab.id, { url: url.href })
                     .catch(
                         err => console.log(err)
                     );
 
-                console.log(`tab is updated`)
+                console.log(`tab is updated : ${url.href}`)
             };
             return;
         }

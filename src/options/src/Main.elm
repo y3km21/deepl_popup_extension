@@ -7,6 +7,7 @@ import Html.Attributes exposing (attribute, class, placeholder, style, value)
 import Html.Events exposing (onClick, onInput)
 import Json.Decode as JD
 import Json.Encode as JE
+import Language
 import Task
 
 
@@ -42,6 +43,7 @@ type alias Model =
     , validinput : Maybe WindowSetting
     , windowSettingFormError : List WindowSettingFormError
     , submitResult : SubmitResult
+    , translateLanguage : Language.Model
     }
 
 
@@ -97,8 +99,9 @@ init _ =
       , validinput = Nothing
       , windowSettingFormError = []
       , submitResult = SubmitResult "black" ""
+      , translateLanguage = Language.init
       }
-    , getWindowSetting ()
+    , Cmd.batch [ getWindowSetting (), Language.getLanguage () ]
     )
 
 
@@ -117,6 +120,7 @@ type Msg
     | DecodeUserInput DecodeMsg
     | SubmitWindowSetting SubmitSettingMsg
     | GotResultSetWindowSetting JE.Value
+    | LanguageMsg Language.Msg
 
 
 type InputMsg
@@ -240,10 +244,18 @@ update msg model =
         GotResultSetWindowSetting result ->
             case JD.decodeValue windowSettingResultDecoder result of
                 Ok _ ->
-                    ( { model | submitResult = SubmitResult "green" "Submit Success" }, getWindowSetting () )
+                    -- 外からchrome.storage.onChangedでgotWindowSetingForCurrentが呼ばれて入ってくるので　getWindowSetting () ) は消しました。
+                    ( { model | submitResult = SubmitResult "green" "Submit Success" }, Cmd.none )
 
                 Err error ->
                     ( { model | submitResult = SubmitResult "red" <| JD.errorToString error }, Cmd.none )
+
+        LanguageMsg langMsg ->
+            let
+                ( langModel, langCmd ) =
+                    Language.update langMsg model.translateLanguage
+            in
+            ( { model | translateLanguage = langModel }, Cmd.map LanguageMsg langCmd )
 
 
 
@@ -260,6 +272,7 @@ subscriptions model =
         [ gotWindowSetting GotWindowSetting
         , gotResultSetWindowSetting GotResultSetWindowSetting
         , gotWindowSettingForCurrent GotWindowSettingForCurrent
+        , Sub.map LanguageMsg Language.subscriptions
         ]
 
 
@@ -293,6 +306,7 @@ view model =
                         [ text "Submit" ]
                     ]
                 ]
+            , Html.map LanguageMsg <| Language.view model.translateLanguage
             ]
         ]
     }

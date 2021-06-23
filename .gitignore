@@ -3,3 +3,4 @@ package-lock.json
 dist
 src/options/elm-stuff
 prod
+src/popup/elm-stuff

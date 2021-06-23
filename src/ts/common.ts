@@ -1,5 +1,18 @@
 export namespace Common {
-    export interface WindowSetting { top?: number, left?: number, width?: number, height?: number, windowId?: number };
+
+
+    // Storageが空かどうかは width,height,windowId,from,intoが常に存在するので
+    // それらで見てもよかったが　わかりやすさのため存在フラグsettingExistを用意した。
+    export interface WindowSetting {
+        top?: number,
+        left?: number,
+        width?: number,
+        height?: number,
+        windowId?: number,
+        settingExist?: boolean, // Storageがクリアされていれば undefined
+        from?: string,
+        into?: string
+    };
 
 
 
@@ -18,10 +31,10 @@ export namespace Common {
 
 
     // Get WindowSetting
-    export const getWindowSetting = () => new Promise<Common.WindowSetting>((resolve, reject) => {
+    export const getWindowSetting = (marker?: string) => new Promise<Common.WindowSetting>((resolve, reject) => {
         try {
             chrome.storage.local.get((result) => {
-                console.log("Get Storage WindowSetting :");
+                console.log(`/----Get Storage WindowSetting : ${marker}`);
                 console.log(result);
                 resolve(result)
             })
@@ -32,24 +45,28 @@ export namespace Common {
 
     // Clear WindowSetting
     export const clearWindowSetting = () => new Promise<void>((resolve, reject) => {
+        console.log("/----Clear Local Storage")
         try {
             chrome.storage.local.clear(() => {
-                console.log("Clear Local Storage")
+                console.log("     Clear Local Storage Done ----/")
                 resolve()
             })
         } catch (e) {
+            console.log("     Clear Local Storage Error ----/")
             reject(e)
         }
     });
 
     // Set WindowSetting
-    export const setWindowSetting = (windowSetting: Common.WindowSetting) => new Promise<void>((resolve, reject) => {
+    export const setWindowSetting = (windowSetting: Common.WindowSetting, marker?: string) => new Promise<void>((resolve, reject) => {
+        console.log(`/----Set Window Setting : ${marker}`)
         try {
             chrome.storage.local.set(windowSetting, () => {
-                console.log("Set Window Setting")
+                console.log("     Set Window Setting Done ----/")
                 resolve()
             })
         } catch (e) {
+            console.log("     Set Window Setting Error ----/")
             reject(e)
         }
     })
@@ -76,4 +93,6 @@ export namespace Common {
 
         return chrome.windows.update(windowSetting.windowId, updateInfo);
     }
+
+
 }
