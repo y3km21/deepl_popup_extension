@@ -1,7 +1,7 @@
 @import "variables";
 
 body {
-  background-color: $background-color1;
+  background-color: whitesmoke;
   display: flex;
   justify-content: center;
 }
@@ -79,6 +79,7 @@ body {
       input {
         margin-left: 0.5rem;
         width: 5rem;
+        border: 0.1rem solid gray;
       }
 
       .value {
@@ -99,6 +100,7 @@ body {
     .language_select {
       margin-left: 0.5rem;
       padding: 0.1rem;
+      border: 0.1rem solid gray;
     }
   }
 }
@@ -118,7 +120,7 @@ body {
 .status_button_wrapper {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin: 10px;
 
   .submit_wrapper {
@@ -172,6 +174,7 @@ button.current {
     border-bottom: 2px solid gray;
     height: 1.4rem;
     padding: 0.1rem 0 0.1rem 0.1rem;
+    font-weight: bold;
   }
 
   .context_wrapper {
@@ -179,7 +182,7 @@ button.current {
     flex-direction: row;
     border-bottom: 2px solid gray;
     height: 1.4rem;
-    justify-content: center;
+    justify-content: left;
 
     h3 {
       width: 3rem;
@@ -191,5 +194,17 @@ button.current {
       margin-left: 0.5rem;
       padding: 0.1rem;
     }
+  }
+}
+// focus
+.check_wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  margin-left: 0.5rem;
+
+  input {
+    margin: 0 0.1rem 0 0.1rem;
   }
 }

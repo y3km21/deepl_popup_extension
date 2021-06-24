@@ -39,6 +39,10 @@ try {
             windowsSettings.into = "ja"
         }
 
+        if (!("focus" in result)) {
+            windowsSettings.focus = true;
+        }
+
         windowsSettings.settingExist = true;
 
         // Set
@@ -76,6 +80,7 @@ chrome.windows.onBoundsChanged.addListener(async (window) => {
 
     //　StorageがClearされた直後は評価を行わない
     if (!(storageSetting.settingExist === undefined)) {
+
         if (window.type !== "popup") {// popupではないwindowは無視
             return;
         } else if (window.id === storageWindowID) {　// 選択したwindowのIDとStrageWindowIDが同じ
@@ -240,8 +245,6 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
     if (!windowExists) { // Window No Exists
         console.log(`Create Window phase ... `)
 
-
-
         // window Create 
         let createData: chrome.windows.CreateData = {
             focused: true,
@@ -255,6 +258,11 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
         updateWindowID = await createAppWindow(createData);
 
         immediatelyAfterWindowCreate = true;
+
+    } else if (storageWindowSetting.focus) {
+        // Windowが存在する時、focusだけする
+        chrome.windows.update(updateWindowID, { focused: true }).catch(err => console.error(err));
+
     }
 
     // Tab URL Update

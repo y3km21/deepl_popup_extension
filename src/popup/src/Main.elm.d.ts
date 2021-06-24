@@ -19,6 +19,9 @@ export namespace Elm {
             setLang: Subscribe<Common.WindowSetting>;
             getLanguage: Subscribe<any>;
             gotLanguage: Send<any>;
+            setFocus: Subscribe<Common.WindowSetting>;
+            getFocus: Subscribe<any>;
+            gotFocus: Send<any>;
         }
 
         interface Subscribe<T> {

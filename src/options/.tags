@@ -5,85 +5,62 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
 Bulgarian	src/Language.elm	/^    = Bulgarian$/;"	t
-Bulgarian	src/language/src/LanguageLib.elm	/^    = Bulgarian$/;"	t
+CBChange	src/Focus.elm	/^    | CBChange Bool$/;"	t
 Chinese	src/Language.elm	/^    | Chinese$/;"	t
-Chinese	src/language/src/LanguageLib.elm	/^    | Chinese$/;"	t
 Czech	src/Language.elm	/^    | Czech$/;"	t
-Czech	src/language/src/LanguageLib.elm	/^    | Czech$/;"	t
 Danish	src/Language.elm	/^    | Danish$/;"	t
-Danish	src/language/src/LanguageLib.elm	/^    | Danish$/;"	t
 DecodeMsg	src/Main.elm	/^type DecodeMsg$/;"	t
 DecodeUserInput	src/Main.elm	/^    | DecodeUserInput DecodeMsg$/;"	t
 Direction	src/Language.elm	/^type Direction$/;"	t
-Direction	src/language/src/LanguageLib.elm	/^type Direction$/;"	t
 Dutch	src/Language.elm	/^    | Dutch$/;"	t
-Dutch	src/language/src/LanguageLib.elm	/^    | Dutch$/;"	t
 English	src/Language.elm	/^    | English$/;"	t
-English	src/language/src/LanguageLib.elm	/^    | English$/;"	t
 Estonian	src/Language.elm	/^    | Estonian$/;"	t
-Estonian	src/language/src/LanguageLib.elm	/^    | Estonian$/;"	t
 Finnish	src/Language.elm	/^    | Finnish$/;"	t
-Finnish	src/language/src/LanguageLib.elm	/^    | Finnish$/;"	t
+Focus	src/Focus.elm	/^port module Focus exposing (..)$/;"	m
+FocusMsg	src/Main.elm	/^    | FocusMsg Focus.Msg$/;"	t
 French	src/Language.elm	/^    | French$/;"	t
-French	src/language/src/LanguageLib.elm	/^    | French$/;"	t
 From	src/Language.elm	/^    = From$/;"	t
-From	src/language/src/LanguageLib.elm	/^    = From$/;"	t
 FromSelect	src/Language.elm	/^    | FromSelect LanguageObject$/;"	t
 German	src/Language.elm	/^    | German$/;"	t
-German	src/language/src/LanguageLib.elm	/^    | German$/;"	t
+GotFocus	src/Focus.elm	/^    = GotFocus JE.Value$/;"	t
 GotLanguage	src/Language.elm	/^    = GotLanguage JE.Value$/;"	t
 GotResultSetWindowSetting	src/Main.elm	/^    | GotResultSetWindowSetting JE.Value$/;"	t
 GotWindowSetting	src/Main.elm	/^    | GotWindowSetting JE.Value$/;"	t
 GotWindowSettingForCurrent	src/Main.elm	/^    = GotWindowSettingForCurrent JE.Value$/;"	t
 Greek	src/Language.elm	/^    | Greek$/;"	t
-Greek	src/language/src/LanguageLib.elm	/^    | Greek$/;"	t
 HeightChange	src/Main.elm	/^    | HeightChange$/;"	t
 HeightError	src/Main.elm	/^    | HeightError SettingInputError$/;"	t
 Hungarian	src/Language.elm	/^    | Hungarian$/;"	t
-Hungarian	src/language/src/LanguageLib.elm	/^    | Hungarian$/;"	t
 InputChange	src/Main.elm	/^    | InputChange InputMsg String$/;"	t
 InputMsg	src/Main.elm	/^type InputMsg$/;"	t
 Into	src/Language.elm	/^    | Into$/;"	t
-Into	src/language/src/LanguageLib.elm	/^    | Into$/;"	t
 IntoSelect	src/Language.elm	/^    | IntoSelect LanguageObject$/;"	t
 InvalidInput	src/Main.elm	/^    = InvalidInput$/;"	t
 Italian	src/Language.elm	/^    | Italian$/;"	t
-Italian	src/language/src/LanguageLib.elm	/^    | Italian$/;"	t
 Japanese	src/Language.elm	/^    | Japanese$/;"	t
-Japanese	src/language/src/LanguageLib.elm	/^    | Japanese$/;"	t
 Language	src/Language.elm	/^port module Language exposing (..)$/;"	m
 Language	src/Language.elm	/^type Language$/;"	t
-Language	src/language/src/LanguageLib.elm	/^type Language$/;"	t
-LanguageLib	src/language/src/LanguageLib.elm	/^module LanguageLib exposiong (Language)$/;"	m
 LanguageMsg	src/Main.elm	/^    | LanguageMsg Language.Msg$/;"	t
 LanguageObject	src/Language.elm	/^type alias LanguageObject =$/;"	a
-LanguageObject	src/language/src/LanguageLib.elm	/^type alias LanguageObject =$/;"	a
 Latvian	src/Language.elm	/^    | Latvian$/;"	t
-Latvian	src/language/src/LanguageLib.elm	/^    | Latvian$/;"	t
 LeftChange	src/Main.elm	/^    | LeftChange$/;"	t
 LeftError	src/Main.elm	/^    | LeftError SettingInputError$/;"	t
 Lithuanian	src/Language.elm	/^    | Lithuanian$/;"	t
-Lithuanian	src/language/src/LanguageLib.elm	/^    | Lithuanian$/;"	t
 Main	src/Main.elm	/^port module Main exposing (main)$/;"	m
+Model	src/Focus.elm	/^type alias Model =$/;"	a
 Model	src/Language.elm	/^type alias Model =$/;"	a
 Model	src/Main.elm	/^type alias Model =$/;"	a
+Msg	src/Focus.elm	/^type Msg$/;"	t
 Msg	src/Language.elm	/^type Msg$/;"	t
 Msg	src/Main.elm	/^type Msg$/;"	t
 Polish	src/Language.elm	/^    | Polish$/;"	t
-Polish	src/language/src/LanguageLib.elm	/^    | Polish$/;"	t
 Portuguese	src/Language.elm	/^    | Portuguese$/;"	t
-Portuguese	src/language/src/LanguageLib.elm	/^    | Portuguese$/;"	t
 Romanian	src/Language.elm	/^    | Romanian$/;"	t
-Romanian	src/language/src/LanguageLib.elm	/^    | Romanian$/;"	t
 Russian	src/Language.elm	/^    | Russian$/;"	t
-Russian	src/language/src/LanguageLib.elm	/^    | Russian$/;"	t
 SettingInputError	src/Main.elm	/^type SettingInputError$/;"	t
 Slovak	src/Language.elm	/^    | Slovak$/;"	t
-Slovak	src/language/src/LanguageLib.elm	/^    | Slovak$/;"	t
 Slovenian	src/Language.elm	/^    | Slovenian$/;"	t
-Slovenian	src/language/src/LanguageLib.elm	/^    | Slovenian$/;"	t
 Spanish	src/Language.elm	/^    | Spanish$/;"	t
-Spanish	src/language/src/LanguageLib.elm	/^    | Spanish$/;"	t
 Submit	src/Main.elm	/^    = Submit$/;"	t
 SubmitError	src/Main.elm	/^    | SubmitError$/;"	t
 SubmitResult	src/Main.elm	/^type alias SubmitResult =$/;"	a
@@ -91,7 +68,6 @@ SubmitSettingMsg	src/Main.elm	/^type SubmitSettingMsg$/;"	t
 SubmitSuccess	src/Main.elm	/^    | SubmitSuccess$/;"	t
 SubmitWindowSetting	src/Main.elm	/^    | SubmitWindowSetting SubmitSettingMsg$/;"	t
 Swedish	src/Language.elm	/^    | Swedish$/;"	t
-Swedish	src/language/src/LanguageLib.elm	/^    | Swedish$/;"	t
 TooSmall	src/Main.elm	/^    | TooSmall$/;"	t
 TopChange	src/Main.elm	/^    = TopChange$/;"	t
 TopError	src/Main.elm	/^    = TopError SettingInputError$/;"	t
@@ -102,22 +78,19 @@ WidthError	src/Main.elm	/^    | WidthError SettingInputError$/;"	t
 WindowSetting	src/Main.elm	/^type alias WindowSetting =$/;"	a
 WindowSettingFormError	src/Main.elm	/^type WindowSettingFormError$/;"	t
 abbreviations	src/Language.elm	/^abbreviations : Dict.Dict String Language$/;"	c
-abbreviations	src/language/src/LanguageLib.elm	/^abbreviations : Dict.Dict String Language$/;"	c
 alwaysStop	src/Language.elm	/^alwaysStop : a -> ( a, Bool )$/;"	f
 arowM/elm-form-decoder	elm.json	/^            "arowM\/elm-form-decoder": "1.4.0",$/;"	f
+checkBox	src/Focus.elm	/^checkBox : Bool -> Html Msg$/;"	f
 createDiv	src/Main.elm	/^        createDiv : String -> String -> InputMsg -> (SettingInputError -> WindowSettingFormError) -> Html Msg$/;"	f
 currentSetting	src/Main.elm	/^currentSetting : WindowSetting -> Html msg$/;"	f
 decodeCmd	src/Main.elm	/^decodeCmd : DecodeMsg -> Cmd Msg$/;"	f
 dependencies	elm.json	/^    "dependencies": {$/;"	f
-dependencies	src/language/elm.json	/^  "dependencies": {$/;"	f
 direct	elm.json	/^        "direct": {$/;"	f
 direct	elm.json	/^        "direct": {},$/;"	f
 elm-version	elm.json	/^    "elm-version": "0.19.1",$/;"	f
-elm-version	src/language/elm.json	/^  "elm-version": "0.19.0 <= v < 0.20.0",$/;"	f
 elm/browser	elm.json	/^            "elm\/browser": "1.0.2",$/;"	f
 elm/bytes	elm.json	/^            "elm\/bytes": "1.0.8",$/;"	f
 elm/core	elm.json	/^            "elm\/core": "1.0.5",$/;"	f
-elm/core	src/language/elm.json	/^    "elm\/core": "1.0.0 <= v < 2.0.0"$/;"	f
 elm/file	elm.json	/^            "elm\/file": "1.0.5",$/;"	f
 elm/html	elm.json	/^            "elm\/html": "1.0.0",$/;"	f
 elm/http	elm.json	/^            "elm\/http": "2.0.0",$/;"	f
@@ -131,46 +104,47 @@ errFilter	src/Main.elm	/^errFilter : List WindowSettingFormError -> (SettingInpu
 errPick	src/Main.elm	/^errPick : WindowSettingFormError -> SettingInputError$/;"	f
 errdiv	src/Main.elm	/^        errdiv : SettingInputError -> Html msg$/;"	f
 errsHtmlMsg	src/Main.elm	/^errsHtmlMsg : List WindowSettingFormError -> (SettingInputError -> WindowSettingFormError) -> Html Msg$/;"	f
-exposed-modules	src/language/elm.json	/^  "exposed-modules": [LanguageLib],$/;"	f
+getFocus	src/Focus.elm	/^port getFocus : () -> Cmd msg$/;"	p
 getLanguage	src/Language.elm	/^port getLanguage : () -> Cmd msg$/;"	p
 getWindowSetting	src/Main.elm	/^port getWindowSetting : () -> Cmd msg$/;"	p
+gotFocus	src/Focus.elm	/^port gotFocus : (JE.Value -> msg) -> Sub msg$/;"	p
 gotLanguage	src/Language.elm	/^port gotLanguage : (JE.Value -> msg) -> Sub msg$/;"	p
 gotResultSetWindowSetting	src/Main.elm	/^port gotResultSetWindowSetting : (JE.Value -> msg) -> Sub msg$/;"	p
 gotWindowSetting	src/Main.elm	/^port gotWindowSetting : (JE.Value -> msg) -> Sub msg$/;"	p
 gotWindowSettingForCurrent	src/Main.elm	/^port gotWindowSettingForCurrent : (JE.Value -> msg) -> Sub msg$/;"	p
 indirect	elm.json	/^        "indirect": {$/;"	f
 indirect	elm.json	/^        "indirect": {}$/;"	f
+init	src/Focus.elm	/^init : Model$/;"	c
 init	src/Language.elm	/^init : Model$/;"	c
 init	src/Main.elm	/^init : () -> ( Model, Cmd Msg )$/;"	f
 languages	src/Language.elm	/^languages : Dict.Dict String LanguageObject$/;"	c
-languages	src/language/src/LanguageLib.elm	/^languages : Dict.Dict String LanguageObject$/;"	c
-license	src/language/elm.json	/^  "license": "MIT",$/;"	f
 main	src/Main.elm	/^main : Program () Model Msg$/;"	c
 maybeIntDecoder	src/Main.elm	/^maybeIntDecoder : FD.Decoder (Maybe Int) () String$/;"	c
 maybeMinBound	src/Main.elm	/^maybeMinBound : Int -> (SettingInputError -> WindowSettingFormError) -> FD.Validator (Maybe Int) WindowSettingFormError$/;"	f
+modelDecoder	src/Focus.elm	/^modelDecoder : JD.Decoder Model$/;"	c
 modelDeocder	src/Language.elm	/^modelDeocder : JD.Decoder Model$/;"	c
-name	src/language/elm.json	/^  "name": "y3km21\/local",$/;"	f
 onChange	src/Language.elm	/^onChange : (LanguageObject -> msg) -> Html.Attribute msg$/;"	f
+popupView	src/Focus.elm	/^popupView : Model -> Html Msg$/;"	f
 popupView	src/Language.elm	/^popupView : Model -> Html Msg$/;"	f
 selectLanguage	src/Language.elm	/^selectLanguage : (LanguageObject -> msg) -> Language -> Html msg$/;"	f
+setFocus	src/Focus.elm	/^port setFocus : JE.Value -> Cmd msg$/;"	p
 setLang	src/Language.elm	/^port setLang : JE.Value -> Cmd msg$/;"	p
 setWindowSetting	src/Main.elm	/^port setWindowSetting : JE.Value -> Cmd msg$/;"	p
 settingInit	src/Main.elm	/^settingInit : WindowSetting$/;"	c
 source-directories	elm.json	/^    "source-directories": [$/;"	f
 statusDecoder	src/Main.elm	/^statusDecoder : String -> JD.Decoder ()$/;"	f
 stringToMaybeInt	src/Main.elm	/^stringToMaybeInt : Bool -> (SettingInputError -> WindowSettingFormError) -> FD.Decoder String WindowSettingFormError (Maybe Int)$/;"	f
+subscriptions	src/Focus.elm	/^subscriptions : Sub Msg$/;"	c
 subscriptions	src/Language.elm	/^subscriptions : Sub Msg$/;"	c
 subscriptions	src/Main.elm	/^subscriptions : Model -> Sub Msg$/;"	f
-summary	src/language/elm.json	/^  "summary": "deepL Language Local Library",$/;"	f
 test-dependencies	elm.json	/^    "test-dependencies": {$/;"	f
-test-dependencies	src/language/elm.json	/^  "test-dependencies": {}$/;"	f
 type	elm.json	/^    "type": "application",$/;"	f
-type	src/language/elm.json	/^  "type": "package",$/;"	f
+update	src/Focus.elm	/^update : Msg -> Model -> ( Model, Cmd Msg )$/;"	f
 update	src/Language.elm	/^update : Msg -> Model -> ( Model, Cmd Msg )$/;"	f
 update	src/Main.elm	/^update : Msg -> Model -> ( Model, Cmd Msg )$/;"	f
 userInputDecoder	src/Main.elm	/^userInputDecoder : FD.Decoder WindowSetting () UserInputSetting$/;"	c
 userInputSetting	src/Main.elm	/^userInputSetting : List WindowSettingFormError -> UserInputSetting -> Html Msg$/;"	f
-version	src/language/elm.json	/^  "version": "1.0.0",$/;"	f
+view	src/Focus.elm	/^view : Model -> Html Msg$/;"	f
 view	src/Language.elm	/^view : Model -> Html Msg$/;"	f
 view	src/Main.elm	/^view : Model -> Browser.Document Msg$/;"	f
 windowSettingDecoder	src/Main.elm	/^windowSettingDecoder : FD.Decoder UserInputSetting WindowSettingFormError WindowSetting$/;"	c

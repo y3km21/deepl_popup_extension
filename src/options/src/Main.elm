@@ -1,6 +1,7 @@
 port module Main exposing (main)
 
 import Browser
+import Focus
 import Form.Decoder as FD
 import Html exposing (Html, button, div, h1, h2, input, text)
 import Html.Attributes exposing (attribute, class, placeholder, style, value)
@@ -44,6 +45,7 @@ type alias Model =
     , windowSettingFormError : List WindowSettingFormError
     , submitResult : SubmitResult
     , translateLanguage : Language.Model
+    , focus : Focus.Model
     }
 
 
@@ -100,8 +102,9 @@ init _ =
       , windowSettingFormError = []
       , submitResult = SubmitResult "black" ""
       , translateLanguage = Language.init
+      , focus = Focus.init
       }
-    , Cmd.batch [ getWindowSetting (), Language.getLanguage () ]
+    , Cmd.batch [ getWindowSetting (), Language.getLanguage (), Focus.getFocus () ]
     )
 
 
@@ -121,6 +124,7 @@ type Msg
     | SubmitWindowSetting SubmitSettingMsg
     | GotResultSetWindowSetting JE.Value
     | LanguageMsg Language.Msg
+    | FocusMsg Focus.Msg
 
 
 type InputMsg
@@ -257,6 +261,13 @@ update msg model =
             in
             ( { model | translateLanguage = langModel }, Cmd.map LanguageMsg langCmd )
 
+        FocusMsg focusMsg ->
+            let
+                ( focusModel, focusCmd ) =
+                    Focus.update focusMsg model.focus
+            in
+            ( { model | focus = focusModel }, Cmd.map FocusMsg focusCmd )
+
 
 
 {------------------------------
@@ -273,6 +284,7 @@ subscriptions model =
         , gotResultSetWindowSetting GotResultSetWindowSetting
         , gotWindowSettingForCurrent GotWindowSettingForCurrent
         , Sub.map LanguageMsg Language.subscriptions
+        , Sub.map FocusMsg Focus.subscriptions
         ]
 
 
@@ -289,7 +301,7 @@ view model =
     { title = "Options"
     , body =
         [ div [ class "option_wrapper" ]
-            [ h1 [] [ text "Popup Window Options" ]
+            [ h1 [] [ text "DeepL Translate Single Popup Window Options" ]
             , currentSetting model.current
             , userInputSetting model.windowSettingFormError model.userinput
             , div [ class "status_button_wrapper" ]
@@ -307,6 +319,7 @@ view model =
                     ]
                 ]
             , Html.map LanguageMsg <| Language.view model.translateLanguage
+            , Html.map FocusMsg <| Focus.view model.focus
             ]
         ]
     }
@@ -344,8 +357,13 @@ currentSetting ws =
                     )
     in
     div [ class "setting_wrapper" ] <|
-        [ h2 [] [ text "Current Settings" ]
-        , div [ class "description" ] [ text "\"Default\" is applied from next open" ]
+        [ h2 [] [ text "Current Window Settings" ]
+        , div [ class "description" ]
+            [ text "\"Default\" is applied from next open"
+            ]
+        , div [ class "description" ]
+            [ text "(For Mac) If the windows do not open as expected in a dual display environment, try setting Chrome's space setting to \"All Desktops\". (Control-click Chrome icon in the Dock -> Options -> \"All Desktops\")"
+            ]
         , div [ class "setting_values_wrapper" ] setting_list_div
         ]
 
@@ -389,7 +407,7 @@ userInputSetting errs uis =
             List.map4 createDiv labelList wsElemList msgList errList
     in
     div [ class "setting_wrapper" ] <|
-        [ h2 [] [ text "Setting Forms" ]
+        [ h2 [] [ text "Window Setting Forms" ]
         , div [ class "description" ]
             [ text "You can set the position and size of the window. "
             , text "If a recognized window exists, the settings will be reflected immediately."

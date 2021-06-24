@@ -48,6 +48,8 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
         if (!(windowSetting.settingExist === undefined)) {
             app.ports.gotWindowSettingForCurrent.send(windowSetting);
             app.ports.gotLanguage.send(windowSetting);
+            app.ports.gotFocus.send(windowSetting);
+
         }
     }
     ).catch(
@@ -139,5 +141,29 @@ app.ports.getLanguage.subscribe(() =>
         }
     ).catch(
         err => console.log(err)
+    )
+)
+
+// Set Focus
+app.ports.setFocus.subscribe((setting) =>
+    Common.setWindowSetting(setting).then(
+        () => {
+            return Common.getWindowSetting()
+        }
+    ).then((windowSetting) => {
+        app.ports.gotFocus.send(windowSetting)
+    }
+    ).catch(
+        err => console.log(err)
+    )
+)
+
+// Get Focus
+app.ports.getFocus.subscribe(() =>
+    Common.getWindowSetting().then(
+        (windowSetting) => {
+            app.ports.gotFocus.send(windowSetting)
+        }
+    ).catch(err => console.log(err)
     )
 )

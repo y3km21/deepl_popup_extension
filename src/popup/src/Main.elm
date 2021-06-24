@@ -1,6 +1,7 @@
 module Main exposing (main)
 
 import Browser
+import Focus
 import Html exposing (Html, button, div, h1, h2, input, text)
 import Html.Attributes exposing (attribute, class, placeholder, style, value)
 import Html.Events exposing (onClick, onInput)
@@ -34,7 +35,9 @@ main =
 
 
 type alias Model =
-    { translateLanguage : Language.Model }
+    { translateLanguage : Language.Model
+    , focus : Focus.Model
+    }
 
 
 
@@ -47,7 +50,14 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { translateLanguage = Language.init }, Cmd.batch [ Language.getLanguage () ] )
+    ( { translateLanguage = Language.init
+      , focus = Focus.init
+      }
+    , Cmd.batch
+        [ Language.getLanguage ()
+        , Focus.getFocus ()
+        ]
+    )
 
 
 
@@ -60,6 +70,7 @@ init _ =
 
 type Msg
     = LanguageMsg Language.Msg
+    | FocusMsg Focus.Msg
 
 
 
@@ -80,6 +91,13 @@ update msg model =
             in
             ( { model | translateLanguage = langModel }, Cmd.map LanguageMsg langCmd )
 
+        FocusMsg focusMsg ->
+            let
+                ( focusModel, focusCmd ) =
+                    Focus.update focusMsg model.focus
+            in
+            ( { model | focus = focusModel }, Cmd.map FocusMsg focusCmd )
+
 
 
 {------------------------------
@@ -91,7 +109,10 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch [ Sub.map LanguageMsg Language.subscriptions ]
+    Sub.batch
+        [ Sub.map LanguageMsg Language.subscriptions
+        , Sub.map FocusMsg Focus.subscriptions
+        ]
 
 
 
@@ -106,5 +127,9 @@ view : Model -> Browser.Document Msg
 view model =
     { title = "PopupMenu"
     , body =
-        [ div [ class "popup_wrapper" ] [ Html.map LanguageMsg <| Language.popupView model.translateLanguage ] ]
+        [ div [ class "popup_wrapper" ]
+            [ Html.map LanguageMsg <| Language.popupView model.translateLanguage
+            , Html.map FocusMsg <| Focus.popupView model.focus
+            ]
+        ]
     }

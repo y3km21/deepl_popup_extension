@@ -11,7 +11,8 @@ export namespace Common {
         windowId?: number,
         settingExist?: boolean, // Storageがクリアされていれば undefined
         from?: string,
-        into?: string
+        into?: string,
+        focus?: boolean
     };
 
 
