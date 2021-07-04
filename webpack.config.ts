@@ -108,7 +108,7 @@ const elm: webpack.RuleSetRule = {
         },
         {
             loader: 'elm-webpack-loader',
-            options: { /*cwd: elmSource */ },
+            options: { cwd: elmSource },
         }
     ]
 }
