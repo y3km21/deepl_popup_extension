@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import { reject } from "lodash";
 import * as path from "path";
 import { Common } from "../ts/common";
@@ -170,7 +171,10 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
 
 
     // Url 
-    let selectedText = info.selectionText;
+    let selectedText: string = encodeURIComponent(info.selectionText);
+    selectedText = _.replace(selectedText, new RegExp('%2F', 'g'), '%5C$&');
+    console.log(`encodeSelectedText : ${selectedText}`);
+
     let url = new URL("https://www.deepl.com");
     url.pathname = "/translator"
     url.hash = path.join(storageWindowSetting.from, storageWindowSetting.into, selectedText);
