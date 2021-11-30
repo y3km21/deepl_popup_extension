@@ -1,58 +1,69 @@
+/**
+ * Backgroud
+ *
+ * Chrome Extension Service Worker
+ *
+ */
+
 import * as _ from "lodash";
-import { reject } from "lodash";
 import * as path from "path";
 import { Common } from "../ts/common";
 
-/************************************************************
- *
+/**
  * Window
  *
- ************************************************************/
-/*
- *
- * TODO
+ */
+
+/**
+ * Common Window Setting import
  *
  */
-// Window settings
 import WindowSetting = Common.WindowSetting;
 
-// Initialize
-// 初っ端なんで非同期で大丈夫っしょ
+/**
+ * Window Setting Initialize
+ *
+ * ローカルストレージ内に保存されているwindowの設定情報を取得し、
+ * 存在しない項目は初期化し、ストレージにセットする。
+ *
+ */
 try {
-  chrome.storage.local.get((result) => {
-    let windowsSettings: WindowSetting = {};
-    if (!("width" in result)) {
+  chrome.storage.local.get((storageSetting) => {
+    let addSetting: WindowSetting = {};
+    if (!("width" in storageSetting)) {
       //widthが存在しない場合、初期化する
-      windowsSettings.width = 750;
+      addSetting.width = 750;
     }
-    if (!("height" in result)) {
+
+    if (!("height" in storageSetting)) {
       //widthが存在しない場合、初期化する
-      windowsSettings.height = 750;
+      addSetting.height = 750;
     }
-    if (!("windowId" in result)) {
+
+    if (!("windowId" in storageSetting)) {
       // windowIDが存在しない場合、初期化する
-      windowsSettings.windowId = -1;
+      addSetting.windowId = -1;
     }
 
-    if (!("from" in result)) {
+    if (!("from" in storageSetting)) {
       // fromが存在しない場合、初期化する
-      windowsSettings.from = "en";
+      addSetting.from = "en";
     }
 
-    if (!("into" in result)) {
+    if (!("into" in storageSetting)) {
       // intoが存在しない場合、初期化する
-      windowsSettings.into = "ja";
+      addSetting.into = "ja";
     }
 
-    if (!("focus" in result)) {
-      windowsSettings.focus = true;
+    if (!("focus" in storageSetting)) {
+      addSetting.focus = true;
     }
 
-    windowsSettings.settingExist = true;
+    addSetting.settingExist = true;
 
-    // Set
+    // StorageにSetthigを追加する。
     try {
-      chrome.storage.local.set(windowsSettings);
+      chrome.storage.local.set(addSetting);
     } catch (e) {
       console.log(e);
     }
@@ -61,34 +72,58 @@ try {
   console.log(e);
 }
 
-// Window 作成　Function
+/**
+ * Create App Window
+ *
+ * @param createData - Window Create Data
+ * {@link https://developer.chrome.com/docs/extensions/reference/windows/ | chrome.windows - Chrome Developers}.
+ * @returns WindowID - Created Window ID
+ *
+ * Window CreateData から Windowを作成する。
+ * 作成完了後、StorageのWindowIDを更新し、
+ * WindowIDのPromiseを返す。
+ *
+ */
 let createAppWindow = async (createData: chrome.windows.CreateData) => {
   return await chrome.windows.create(createData).then((window) => {
-    console.log("create window");
+    console.log("Create AppWindow");
     // StorageのWindowIDを更新する。
     return Common.setWindowId(window.id);
   });
 };
 
-// PopupWindow位置、サイズ情報を保存する
-// Windowのサイズ変更、Windowの位置変更でFire
 // async を別途　Commonに関数でまとめて　removeListener を呼べるようにする
+/**
+ * Window OnBoundsChanged Event
+ *
+ * 任意のWindowのサイズ、位置が変更されたときにFire
+ *
+ * Windowが
+ *  Storageに保存されたWindowIdと一致する
+ *  または
+ *  PopupかつDeeplTranslatorを表示したもの
+ * だった場合、
+ * Storageに更新された位置、サイズ、WindowIDを保存する。
+ *
+ */
 chrome.windows.onBoundsChanged.addListener(async (window) => {
+  // popup, app 以外のwindowTypeの場合は無視
+  if (window.type !== "popup" && window.type !== "app") {
+    return;
+  }
+
+  // Storageに保存されたWindowSettingを取得。
   let storageSetting = await Common.getWindowSetting("onBoundsChanged");
   let storageWindowID = storageSetting.windowId;
-  console.log(
-    `SettingSubmit in onBoundsChanged : ${storageSetting.settingExist}`
-  );
 
-  //　StorageがClearされた直後は評価を行わない
-  if (!(storageSetting.settingExist === undefined)) {
-    if (window.type !== "popup") {
-      // popupではないwindowは無視
-      return;
-    } else if (window.id === storageWindowID) {
-      // 選択したwindowのIDとStrageWindowIDが同じ
-      console.log("/----Windows OnBoundsChanged----/");
-      console.log(`Storage Window ID is Valid : ${storageWindowID}`);
+  //　strageSettingが初期化されていることを確認する。
+  if (!(storageSetting.settingExist == null)) {
+    console.log("/----Windows OnBoudsChanged----/");
+
+    // ActiveなwindowのIDとStrageWindowIDが同じ
+    if (window.id === storageWindowID) {
+      console.log(`   Storage Window ID is Valid : ${storageWindowID}`);
+      // 変更されたwindow情報をstorageにset
       chrome.storage.local.set(
         {
           top: window.top,
@@ -96,28 +131,29 @@ chrome.windows.onBoundsChanged.addListener(async (window) => {
           height: window.height,
           width: window.width,
         },
-        () => {
-          console.log("/----Windows OnBoundsChanged End----/");
-        }
+        () => {}
       );
-    } else {
-      console.log("/----Windows OnBoundsChanged----/");
-      console.log(`Storage Window ID is Invalid : ${storageWindowID}`);
+    }
+    //　ActiveなwindowのIDとStrageWindowIDが異なる。
+    else {
+      console.log(`   Storage Window ID is Invalid : ${storageWindowID}`);
 
       chrome.tabs
+        //　Activeなwindow内でdeeplを開いているタブを取得する。
         .query({
           url: "https://www.deepl.com/translator*",
           windowId: window.id,
         })
         .then(async (tabs) => {
+          // 取得されたtabsにDeepLが存在しない。
           if (tabs.length === 0) {
-            // 選択したタブがDeepLではない
-            console.log("Invalid Window");
+            console.log("   The tab that opens DeepL does not exist");
             return;
-          } else {
-            //  選択したタブがDeepL
+          }
+          //  取得されたtabsにDeepLが存在する。
+          else {
             try {
-              console.log("-- Set Storage");
+              // 変更されたwindow情報をstorageにset
               chrome.storage.local.set(
                 {
                   top: window.top,
@@ -127,8 +163,7 @@ chrome.windows.onBoundsChanged.addListener(async (window) => {
                   windowId: window.id,
                 },
                 () => {
-                  console.log(`Update Storage Window ID : ${window.id}`);
-                  console.log("/----Windows OnBoundsChanged End----/");
+                  console.log(`   Update Storage Window ID : ${window.id}`);
                 }
               );
             } catch (e) {
@@ -141,21 +176,32 @@ chrome.windows.onBoundsChanged.addListener(async (window) => {
   }
 });
 
-// remove
+/**
+ * Window onRemoved Event
+ *
+ * 任意のwindowがcloseされたときにFire
+ *
+ */
 chrome.windows.onRemoved.addListener(async (windowId) => {
   if (windowId === (await Common.getWindowSetting()).windowId) {
     console.log("Removed deepL Window");
   }
 });
 
-/************************************************************
+/**
+ * Context
  *
- * context
+ */
+
+/**
+ * Context Properties
  *
- ************************************************************/
-
-//Context Create
-
+ * Context Menu用の Properties
+ * 
+ * {@link https://developer.chrome.com/docs/extensions/reference/contextMenus/ | chrome.contextMenus
+ }
+ *
+ */
 let contextProperties: chrome.contextMenus.CreateProperties = {
   id: "deepl_extension_context",
   checked: true,
@@ -164,157 +210,170 @@ let contextProperties: chrome.contextMenus.CreateProperties = {
   visible: true,
 };
 
+/**
+ * Create Context Menu
+ *
+ */
 try {
   chrome.contextMenus.create(contextProperties);
 } catch (err) {
   console.log(err);
 }
 
+/**
+ * ContextMenus onClicked Event
+ *
+ * コンテキストメニューをクリックしたとき、選択していたテキストから、URLを作成し、
+ * DeepLを開いているdeepLWindowの存在確認、作成、タブURLの更新を行う。
+ *
+ */
 chrome.contextMenus.onClicked.addListener(async (info) => {
-  /*
-   *
-   * Todo
-   * selectedTextのトリム、　トリム設定を設定画面からできるとよし。
-   */
+  // get window setting
+  let storageSetting: WindowSetting = await Common.getWindowSetting();
 
-  // get window settings
-  let storageWindowSetting: WindowSetting = await Common.getWindowSetting();
-
-  // Url
+  // 選択した文字列をパーセントエンコード
   let selectedText: string = encodeURIComponent(info.selectionText);
-  selectedText = _.replace(selectedText, new RegExp("%2F", "g"), "%5C$&");
+  /**
+   * 文字列の置換
+   *
+   * DeepLtranslatorは
+   *  %2F(/), %7C(|)
+   *  を %5C:(\) でエスケープする必要がある。
+   *
+   */
+  selectedText = _.replace(selectedText, new RegExp("%2F|%7C", "g"), "%5C$&");
   console.log(`encodeSelectedText : ${selectedText}`);
 
+  // Create URL
   let url = new URL("https://www.deepl.com");
   url.pathname = "/translator";
-  url.hash = path.join(
-    storageWindowSetting.from,
-    storageWindowSetting.into,
-    selectedText
-  );
+  url.hash = path.join(storageSetting.from, storageSetting.into, selectedText);
 
-  // updateWIndowID
-  let updateWindowID = -1;
+  // openAppWindowID
+  let openAppWindowID = -1;
 
-  // PopupWindowの確認
-  const windowExists = await Common.getPopupWindowIDs()
-    .then(async (windowIDs) => {
-      if (windowIDs.length === 0) {
-        // windowが存在しない
+  /**
+   * 有効なAppWindowが存在するか確認する。
+   *
+   */
+  const appWindowExists = await Common.getDeepLWindowIDs()
+    .then(async (deepLWindowIds) => {
+      // deepLWindowが存在しない
+      if (deepLWindowIds.length === 0) {
         console.log("Popup Window is No Exists");
         return false;
       }
 
-      let storageWindowID: number = (
-        await Common.getWindowSetting().catch((err) => {
-          // errorが発生した場合　WindowIdは-1をセット
-          console.log(err);
-          return { windowId: -1 };
-        })
-      ).windowId;
+      // storageに保存されているWindowID
+      let storageWindowID: number = storageSetting.windowId;
 
-      //windowIDs内にStorageWindowIDが存在するか確認する
-      if (windowIDs.includes(storageWindowID)) {
-        // Exists
-
-        // updateWindowIDを更新
-        updateWindowID = storageWindowID;
-
-        // WindowIDがStorageWIndowIDと異なればWindowをリムーブする
-        windowIDs.forEach((WindowID) => {
-          if (WindowID !== storageWindowID) {
-            chrome.windows.remove(WindowID).catch((err) => console.log(err));
-          }
-        });
-
-        return true;
-      } else {
-        // No Exists
-        // windowIDs[0]のWindowをセットする
-        return await Common.setWindowId(windowIDs.shift())
-          .then((setWindowID) => {
-            console.log(`Already Exist Window ID : ${setWindowID}`);
-            // updateWindowIDを更新
-            updateWindowID = setWindowID;
-
-            // 残りのWindowをリムーブする
-            windowIDs.forEach((windowID) => {
-              chrome.windows.remove(windowID).catch((err) => console.log(err));
+      /**
+       * deepLWindowsIdsに有効なappWindowIdが存在するかどうか
+       */
+      let appWindowExists = false;
+      for (let idx = 0; idx < deepLWindowIds.length; ++idx) {
+        if (deepLWindowIds[idx] === storageWindowID) {
+          openAppWindowID = storageWindowID;
+          appWindowExists = true;
+        } else if (idx === deepLWindowIds.length - 1 && !appWindowExists) {
+          // 最終要素までstorageWindowIDと同じwindowがなければ
+          // 新たにwindowIdを設定する。
+          await Common.setWindowId(deepLWindowIds[idx])
+            .then((setWindowId) => {
+              openAppWindowID = setWindowId;
+              appWindowExists = true;
+            })
+            .catch((e) => {
+              console.log(e);
             });
-            return true;
-          })
-          .catch((err) => {
-            console.log(err);
-            return false;
-          });
+        } else {
+          // 無効なDeepLWindowはすべて閉じる。
+          await chrome.windows
+            .remove(deepLWindowIds[idx])
+            .catch((err) => console.log(err));
+        }
       }
+
+      return appWindowExists;
     })
     .catch((err) => {
       console.log(err);
       return false;
     });
-  console.log(`WindowExists : ${windowExists}`);
 
-  // window作成直後かどうか
-  let immediatelyAfterWindowCreate = false;
+  console.log(`WindowExists : ${appWindowExists}`);
 
-  //Popup Window Create
-  if (!windowExists) {
-    // Window No Exists
-    console.log(`Create Window phase ... `);
+  /**
+   * Popup Window Create
+   *
+   * windowが存在しない場合、新たに作成する。
+   * 存在する場合、tabをアップデートする。
+   * focusフラグがセットされていればfocusされる。
+   *
+   */
+  if (appWindowExists) {
+    //　windowが存在する
 
-    // window Create
-    let createData: chrome.windows.CreateData = {
-      focused: true,
-      type: "popup",
-      top: storageWindowSetting.top,
-      left: storageWindowSetting.left,
-      height: storageWindowSetting.height,
-      width: storageWindowSetting.width,
-      url: url.href,
+    // focus
+    if (storageSetting.focus) {
+      chrome.windows
+        .update(openAppWindowID, { focused: true })
+        .catch((err) => console.error(err));
+    }
+    // Tab URL Update
+    /**
+     * queryOptions
+     *
+     * 指定したWindowIDのDeepLを開いているtabを参照する
+     */
+    let queryOptions: chrome.tabs.QueryInfo = {
+      url: "https://www.deepl.com/translator*",
+      windowId: openAppWindowID,
     };
-    updateWindowID = await createAppWindow(createData);
 
-    immediatelyAfterWindowCreate = true;
-  } else if (storageWindowSetting.focus) {
-    // Windowが存在する時、focusだけする
-    chrome.windows
-      .update(updateWindowID, { focused: true })
-      .catch((err) => console.error(err));
-  }
+    /**
+     * 既存のWindowのurlを更新する。
+     */
+    chrome.tabs
+      .query(queryOptions)
+      .then(async (tabs) => {
+        if (tabs.length === 0) {
+          // ここが呼ばれることはない。
+          console.log(`tabs.length is ${tabs.length} !! Why?!`);
+          return;
+        }
 
-  // Tab URL Update
-  //WindowType:popupでQuery発行すると消しきれてないWindow選択しそうなのでWindowIDでQuery発行
-  let queryOptions: chrome.tabs.QueryInfo = {
-    url: "https://www.deepl.com/translator*",
-    windowId: updateWindowID,
-  };
-  chrome.tabs
-    .query(queryOptions)
-    .then(async (tabs) => {
-      if (tabs.length === 0) {
-        return;
-      }
+        //　tabを取得
+        let tab = tabs.shift(); //tabsは空になっている　はず
 
-      let tab = tabs.shift(); //tabsは空になっている　はず
-      if (immediatelyAfterWindowCreate) {
-        // Window 作成直後
-        // tabの更新を行わない
-        immediatelyAfterWindowCreate = false;
-      } else {
-        // Window 作成直後ではない
         // tabの更新を行う
         await chrome.tabs
           .update(tab.id, { url: url.href })
           .catch((err) => console.log(err));
 
         console.log(`tab is updated : ${url.href}`);
-      }
-      return;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    // Window No Exists
+    console.log(`Create New App Window`);
+
+    // window Create
+    let createData: chrome.windows.CreateData = {
+      focused: true,
+      type: "popup",
+      top: storageSetting.top,
+      left: storageSetting.left,
+      height: storageSetting.height,
+      width: storageSetting.width,
+      url: url.href,
+    };
+
+    // AppWindowを新たに作成。
+    openAppWindowID = await createAppWindow(createData);
+  }
 });
 
 /************************************************************
@@ -322,7 +381,6 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
  * Ad No Display
  *
  ************************************************************/
-
 chrome.webNavigation.onDOMContentLoaded.addListener(
   (details) => {
     chrome.tabs
@@ -331,7 +389,7 @@ chrome.webNavigation.onDOMContentLoaded.addListener(
         return chrome.windows.get(tab.windowId);
       })
       .then((window) => {
-        if (window.type === "popup") {
+        if (window.type === "popup" || window.type === "app") {
           console.log(`onDOMContentLoaded! : tabid is ${details.tabId}`);
           // ad container no display
           chrome.scripting
@@ -348,12 +406,15 @@ chrome.webNavigation.onDOMContentLoaded.addListener(
 );
 
 function adRemove() {
-  //document.getElementById("lmt_pro_ad_container_1").style.display = "none";
-  //document.getElementById("lmt_pro_ad_container_2").style.display = "none";
-  //document.getElementById("lmt_quotes_article").style.display = "none";
-
-  // update ad remove 210902
   document.getElementById("lmt_pro_ad_container").style.display = "none";
   document.getElementById("dl_quotes_container").style.display = "none";
   document.getElementById("iosAppAdPortal").style.display = "none";
+
+  // Footer Remove
+  Array.prototype.forEach.call(
+    document.getElementsByTagName("footer"),
+    (elem: HTMLElement) => {
+      elem.style.display = "none";
+    }
+  );
 }
