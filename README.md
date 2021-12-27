@@ -4,4 +4,4 @@ chrome extension template
 
 ## TODO
 
-[ ] リファクタリング続き。
+- [ ] リファクタリング続き。
