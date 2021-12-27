@@ -73,23 +73,6 @@ export namespace Common {
       }
     });
 
-  // Get PopupWindowID
-  const popUpWindowIDsQueryOptions: chrome.tabs.QueryInfo = {
-    url: "https://www.deepl.com/translator*",
-    windowType: "popup",
-  };
-
-  export const getPopupWindowIDs = async () => {
-    return await chrome.tabs.query(popUpWindowIDsQueryOptions).then((tabs) => {
-      chrome.windows.getAll((windows) => {
-        console.log(windows);
-      });
-
-      console.log(tabs);
-      return tabs.map((tab) => tab.windowId);
-    });
-  };
-
   /**
    * getDeepLWindowIds
    *
